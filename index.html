@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RANDOMIZER / 001</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f1ea;
+    --ink: #0a0a0a;
+    --paper: #faf7f0;
+    --accent: #ff4d1a;
+    --lime: #d4ff3a;
+    --muted: #8a8478;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body {
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.08) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+
+  .frame {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px 18px 60px;
+    position: relative;
+  }
+
+  header {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  header .dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .title-block {
+    margin-bottom: 28px;
+    position: relative;
+  }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: clamp(64px, 18vw, 88px);
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+  }
+  h1 .ital {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .title-meta {
+    position: absolute;
+    top: 4px; right: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-align: right;
+    line-height: 1.4;
+    color: var(--muted);
+  }
+
+  .input-section { margin-bottom: 20px; }
+  .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+  }
+  .input-row {
+    display: flex;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .input-row:focus-within {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  input[type="text"] {
+    flex: 1;
+    padding: 14px 16px;
+    border: none;
+    background: transparent;
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    outline: none;
+    color: var(--ink);
+  }
+  input[type="text"]::placeholder { color: var(--muted); font-style: italic; }
+  .add-btn {
+    padding: 0 22px;
+    border: none;
+    border-left: 2px solid var(--ink);
+    background: var(--lime);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .add-btn:hover { background: var(--ink); color: var(--lime); }
+
+  .name-list {
+    list-style: none;
+    margin-bottom: 24px;
+  }
+  .name-list li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--ink);
+    animation: slideIn 0.3s ease-out;
+  }
+  .name-list li .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    width: 32px;
+  }
+  .name-list li .name {
+    flex: 1;
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 500;
+  }
+  .name-list li .remove-btn {
+    background: none;
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    color: var(--muted);
+    padding: 4px 8px;
+    letter-spacing: 0.1em;
+  }
+  .name-list li .remove-btn:hover { color: var(--accent); }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-8px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .action-btn {
+    padding: 18px 12px;
+    border: 2px solid var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform 0.1s, box-shadow 0.1s;
+    text-align: left;
+    line-height: 1.3;
+  }
+  .action-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .action-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 var(--ink);
+  }
+  .shuffle { background: var(--accent); color: var(--paper); }
+  .pick { background: var(--ink); color: var(--lime); }
+  .action-btn .big {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    text-transform: none;
+    margin-top: 4px;
+  }
+  .clear-btn {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--muted);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-bottom: 28px;
+  }
+  .clear-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  .result-section {
+    border-top: 2px solid var(--ink);
+    padding-top: 20px;
+  }
+  .result-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .result-empty {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--muted);
+    line-height: 1.3;
+  }
+  .winner-display { text-align: center; padding: 16px 0; }
+  .winner-prefix {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .winner-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(48px, 14vw, 72px);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    background: linear-gradient(180deg, var(--ink) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: winnerReveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes winnerReveal {
+    0% { opacity: 0; transform: scale(0.5) rotate(-3deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0); }
+  }
+
+  .order-list { list-style: none; }
+  .order-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(10,10,10,0.1);
+    animation: orderIn 0.4s ease-out backwards;
+  }
+  .order-list li:nth-child(1) { animation-delay: 0.05s; }
+  .order-list li:nth-child(2) { animation-delay: 0.10s; }
+  .order-list li:nth-child(3) { animation-delay: 0.15s; }
+  .order-list li:nth-child(4) { animation-delay: 0.20s; }
+  .order-list li:nth-child(5) { animation-delay: 0.25s; }
+  .order-list li:nth-child(6) { animation-delay: 0.30s; }
+  .order-list li:nth-child(n+7) { animation-delay: 0.35s; }
+  @keyframes orderIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .order-list .rank {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    width: 28px;
+  }
+  .order-list .rank-1 { color: var(--accent); font-weight: 700; }
+  .order-list .name {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    flex: 1;
+  }
+  .order-list .name-1 {
+    font-weight: 900;
+    font-style: italic;
+    font-size: 28px;
+  }
+
+  footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .corner {
+    position: fixed;
+    top: 12px; left: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    transform: rotate(-90deg);
+    transform-origin: left top;
+  }
+</style>
+</head>
+<body>
+<div class="corner">★ ED.001 / RANDOMIZER</div>
+<div class="frame">
+
+  <header>
+    <span><span class="dot"></span>LIVE</span>
+    <span id="dateStamp">—</span>
+  </header>
+
+  <div class="title-block">
+    <div class="eyebrow">A tool for the indecisive</div>
+    <h1>Pick.<br><span class="ital">fairly.</span></h1>
+    <div class="title-meta">
+      ISSUE №001<br>
+      <span id="countMeta">00 ENTRIES</span>
+    </div>
+  </div>
+
+  <section class="input-section">
+    <div class="label">
+      <span>↳ Add entry</span>
+      <span id="charCount">0/40</span>
+    </div>
+    <div class="input-row">
+      <input type="text" id="nameInput" placeholder="Type a name…" maxlength="40" onkeypress="if(event.key==='Enter') addName()" oninput="updateCharCount()">
+      <button class="add-btn" onclick="addName()">+ ADD</button>
+    </div>
+  </section>
+
+  <ul class="name-list" id="nameList"></ul>
+
+  <div class="actions">
+    <button class="action-btn shuffle" onclick="shuffle()">
+      Mode 01
+      <span class="big">Shuffle</span>
+    </button>
+    <button class="action-btn pick" onclick="pickOne()">
+      Mode 02
+      <span class="big">Pick one</span>
+    </button>
+  </div>
+  <button class="clear-btn" onclick="clearAll()">⌫ Clear all entries</button>
+
+  <section class="result-section">
+    <div class="result-label">
+      <span>※ Result</span>
+      <span id="resultStamp">awaiting input</span>
+    </div>
+    <div id="result">
+      <div class="result-empty">Hit a button and let chance decide.</div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Saved locally</span>
+    <span>Made for daily use</span>
+  </footer>
+</div>
+
+<script>
+  const STORAGE_KEY = 'randomizer_names_v2';
+  const DEFAULTS = ['Farida','Dilnura','Sohiba','Sevinch','Muslim','Maqsudjon'];
+  let names = [];
+
+  function fmtDate() {
+    const d = new Date();
+    const opts = { year:'numeric', month:'short', day:'2-digit' };
+    return d.toLocaleDateString('en-GB', opts).toUpperCase() + ' · ' +
+           d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  }
+  document.getElementById('dateStamp').textContent = fmtDate();
+
+  function loadNames() {
+    try {
+      const r = localStorage.getItem(STORAGE_KEY);
+      names = r ? JSON.parse(r) : [...DEFAULTS];
+    } catch {
+      names = [...DEFAULTS];
+    }
+    render();
+  }
+  function saveNames() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(names)); } catch(e){}
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function render() {
+    const list = document.getElementById('nameList');
+    list.innerHTML = '';
+    names.forEach((n, i) => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span class="num">${String(i+1).padStart(2,'0')}</span>
+        <span class="name">${escapeHtml(n)}</span>
+        <button class="remove-btn" onclick="removeName(${i})">REMOVE ✕</button>
+      `;
+      list.appendChild(li);
+    });
+    document.getElementById('countMeta').textContent =
+      String(names.length).padStart(2,'0') + ' ENTR' + (names.length === 1 ? 'Y' : 'IES');
+  }
+
+  function updateCharCount() {
+    const v = document.getElementById('nameInput').value;
+    document.getElementById('charCount').textContent = v.length + '/40';
+  }
+
+  function addName() {
+    const input = document.getElementById('nameInput');
+    const v = input.value.trim();
+    if (v) {
+      names.push(v);
+      input.value = '';
+      updateCharCount();
+      saveNames();
+      render();
+    }
+  }
+
+  function removeName(i) {
+    names.splice(i, 1);
+    saveNames();
+    render();
+  }
+
+  function clearAll() {
+    if (confirm('Clear all entries?')) {
+      names = [];
+      saveNames();
+      render();
+      document.getElementById('result').innerHTML =
+        '<div class="result-empty">Hit a button and let chance decide.</div>';
+      document.getElementById('resultStamp').textContent = 'cleared';
+    }
+  }
+
+  function timeStamp() {
+    const d = new Date();
+    return d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  }
+
+  function shuffle() {
+    if (names.length < 2) { flash('add at least 2 entries'); return; }
+    const arr = [...names];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    const html = '<ul class="order-list">' + arr.map((n,i) =>
+      `<li>
+        <span class="rank ${i===0?'rank-1':''}">${String(i+1).padStart(2,'0')}</span>
+        <span class="name ${i===0?'name-1':''}">${escapeHtml(n)}</span>
+      </li>`
+    ).join('') + '</ul>';
+    document.getElementById('result').innerHTML = html;
+    document.getElementById('resultStamp').textContent = 'shuffled · ' + timeStamp();
+  }
+
+  function pickOne() {
+    if (names.length === 0) { flash('no entries yet'); return; }
+    const winner = names[Math.floor(Math.random() * names.length)];
+    document.getElementById('result').innerHTML = `
+      <div class="winner-display">
+        <div class="winner-prefix">→ selected</div>
+        <div class="winner-name">${escapeHtml(winner)}</div>
+      </div>
+    `;
+    document.getElementById('resultStamp').textContent = 'picked · ' + timeStamp();
+  }
+
+  function flash(msg) {
+    const el = document.getElementById('resultStamp');
+    const original = el.textContent;
+    el.textContent = msg;
+    el.style.color = 'var(--accent)';
+    setTimeout(() => { el.style.color = ''; el.textContent = original; }, 1800);
+  }
+
+  loadNames();
+</script>
+</body>
+</html>
